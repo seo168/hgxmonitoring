@@ -355,7 +355,7 @@ function initFilters(){
   fillSelect("country",[...new Set(rawRows.map(r=>r["国家"]).filter(Boolean))],t("allCountry"));
   fillSelect("platform",[...new Set(rawRows.map(r=>r["平台"]).filter(Boolean))],t("allPlatform"));
   fillSelect("type",[...new Set(rawRows.map(r=>r["类型"]||r["工单类型"]).filter(Boolean))],t("allType"));
-  const opKey=currentPage==="thirdparty_rate"?"三方":"操作人";
+  const opKey=currentPage==="thirdparty_rate"?"统一三方":"操作人";
   fillSelect("operator",[...new Set(rawRows.map(r=>r[opKey]).filter(Boolean))],t("allOperator"));
 }
 
@@ -367,7 +367,7 @@ function fillSelect(id,arr,label){
 
 function applyFilters(){
   const s=$("startDate").value,e=$("endDate").value,c=$("country").value,p=$("platform").value,tp=$("type").value,op=$("operator").value,q=$("search").value.toLowerCase();
-  const opKey=currentPage==="thirdparty_rate"?"三方":"操作人";
+  const opKey=currentPage==="thirdparty_rate"?"统一三方":"操作人";
 
   filteredRows=rawRows.filter(r=>{
     const d=normalizeDate(r["日期"]);
