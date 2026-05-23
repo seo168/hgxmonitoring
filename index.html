@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hensem数据后台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,"Microsoft YaHei",sans-serif}
+body{background:#f3f7fd;color:#152238}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:#0f1b31;color:#fff;padding:18px 14px;position:fixed;top:0;bottom:0}
+.logo{display:flex;gap:10px;align-items:center;margin-bottom:35px}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#2dd4bf,#2563eb);display:grid;place-items:center;font-weight:bold}
+.logo h2{font-size:17px}.logo p{font-size:11px;color:#9fb2ce}
+.menu-title{font-size:12px;color:#71829c;margin:22px 8px}
+.menu-item{padding:14px 12px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;color:#dbeafe;font-weight:600}
+.menu-item.active{background:#1d4ed8;box-shadow:0 0 0 1px #60a5fa55}
+.badge{font-size:11px;background:#064e3b;color:#86efac;padding:4px 8px;border-radius:999px}
+.main{margin-left:230px;width:calc(100% - 230px);padding:20px}
+.top-tabs,.filters,.quick,.subtabs,.cards,.panel{background:#fff;border:1px solid #dbe6f3;border-radius:16px;box-shadow:0 5px 18px #2b4b7610}
+.top-tabs{padding:18px;margin-bottom:12px;display:flex;gap:18px;overflow:auto}
+.tab{border:0;background:transparent;padding:11px 18px;border-radius:12px;font-weight:700;color:#29445f;cursor:pointer;white-space:nowrap}
+.tab.active{background:#eef5ff;color:#1d4ed8}
+.filters{padding:16px;margin-bottom:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.field label{display:block;font-size:12px;color:#64748b;margin-bottom:6px}
+.field input,.field select{width:100%;height:38px;border:1px solid #cbd5e1;border-radius:10px;padding:0 10px;background:white}
+.btns{display:flex;gap:8px;align-items:end}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+.primary{background:#2563eb;color:#fff}.ghost{background:#eef2ff;color:#1d4ed8}
+.quick{padding:12px;margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quick span{font-size:13px;color:#64748b}
+.quick button{padding:7px 13px;background:#eef5ff;color:#1d4ed8}
+.subtabs{display:inline-flex;padding:8px;margin-bottom:12px;gap:8px}
+.subtabs button.active{background:#fff;color:#1d4ed8;box-shadow:0 2px 10px #0001}
+.cards{background:transparent;border:0;box-shadow:none;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px}
+.card{background:#fff;border:1px solid #dbe6f3;border-radius:12px;padding:13px}
+.card small{color:#64748b;font-weight:700}.card b{display:block;margin-top:5px;font-size:18px}
+.panel{padding:18px}
+.panel h1{font-size:24px;margin-bottom:18px}
+.desc{font-size:14px;margin-bottom:18px;color:#334155}
+.table-wrap{overflow:auto;border-top:1px solid #e2e8f0}
+table{width:100%;border-collapse:collapse;min-width:1700px}
+th{background:#f8fafc;color:#475569;font-size:13px;text-align:left;padding:13px;border-bottom:1px solid #e2e8f0;white-space:nowrap}
+td{padding:13px;border-bottom:1px solid #e2e8f0;font-size:13px;white-space:nowrap}
+tr:nth-child(even){background:#fbfdff}
+tr.abnormal{background:#fff1f2}
+.percent{font-weight:800;color:#0f766e}
+.bar{display:inline-block;width:36px;height:5px;background:#14b8a6;border-radius:99px;margin-left:6px}
+.red{background:#fee2e2;color:#dc2626;padding:4px 8px;border-radius:999px;font-weight:800}
+.green{background:#dcfce7;color:#16a34a;padding:4px 8px;border-radius:999px;font-weight:800}
+.muted{color:#94a3b8}
+@media(max-width:900px){
+.sidebar{display:none}.main{margin-left:0;width:100%;padding:12px}
+.filters{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">Data</div>
+      <div><h2>Hensem数据后台</h2><p>Hensem Data Dashboard</p></div>
+    </div>
+    <div class="menu-title">系统模块</div>
+    <div class="menu-item">提现/自动出款统计 <span class="badge">已接入</span></div>
+    <div class="menu-item">工单/客服 <span class="badge">已接入</span></div>
+    <div class="menu-item active">📊 三方量/费率 <span class="badge">已接入</span></div>
+  </aside>
+
+  <main class="main">
+    <div class="top-tabs" id="countryTabs"></div>
+
+    <section class="filters">
+      <div class="field"><label>开始日期</label><input type="date" id="startDate"></div>
+      <div class="field"><label>结束日期</label><input type="date" id="endDate"></div>
+      <div class="field"><label>平台</label><select id="platform"><option value="">全部平台</option></select></div>
+      <div class="field"><label>统一三方</label><select id="provider"><option value="">全部三方</option></select></div>
+      <div class="field"><label>钱包/通道类型</label><select id="type"><option value="">全部类型</option></select></div>
+      <div class="field"><label>搜索</label><input id="search" placeholder="例如 BFPAY / GCASH / PH19"></div>
+      <div class="btns"><button class="primary" onclick="applyFilters()">重新读取</button><button class="ghost" onclick="resetFilters()">重置</button></div>
+    </section>
+
+    <div class="quick">
+      <span>快捷日期:</span>
+      <button onclick="quickDate(0)">今天</button>
+      <button onclick="quickDate(1)">昨日</button>
+      <button onclick="quickDate(2)">前日</button>
+      <button onclick="quickRange(7)">本周</button>
+      <button onclick="quickRange(30)">本月</button>
+    </div>
+
+    <div class="subtabs">
+      <button class="active">所有明细</button>
+      <button>平台量</button>
+      <button>异常提醒</button>
+    </div>
+
+    <section class="cards">
+      <div class="card"><small>主三方</small><b id="cProviders">0</b></div>
+      <div class="card"><small>平台</small><b id="cPlatforms">0</b></div>
+      <div class="card"><small>代收金额</small><b id="cReceive">0</b></div>
+      <div class="card"><small>代付金额</small><b id="cPayout">0</b></div>
+      <div class="card"><small>合计金额</small><b id="cTotal">0</b></div>
+      <div class="card"><small>合计笔数</small><b id="cOrders">0</b></div>
+      <div class="card"><small>代收手续费</small><b id="cReceiveFee">0</b></div>
+      <div class="card"><small>代付手续费</small><b id="cPayoutFee">0</b></div>
+      <div class="card"><small>合计手续费</small><b id="cFee">0</b></div>
+    </section>
+
+    <section class="panel">
+      <h1 id="title">所有明细</h1>
+      <p class="desc">所有明细按 日期 > 主三方 汇总，可筛选日期、平台、国家、三方，并自动计算金额、笔数、手续费与昨日对比。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日期</th><th>国家</th><th>统一三方</th>
+              <th>代收金额</th><th>代收占比</th><th>代收笔数</th>
+              <th>代付金额</th><th>代付占比</th><th>代付笔数</th>
+              <th>合计金额</th><th>合计笔数</th>
+              <th>代收费率</th><th>代收手续费</th>
+              <th>代付费率</th><th>代付手续费</th>
+              <th>合计手续费</th><th>手续费占比</th>
+              <th>昨日代收</th><th>代收对比</th>
+              <th>昨日代付</th><th>代付对比</th>
+              <th>备注</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const SHEET_CSV_URL = "PASTE_GOOGLE_SHEET_CSV_LINK_HERE";
+
+let rawData = [];
+let currentCountry = "";
+
+const demoData = [
+["2026-05-21","印尼","YY9","YerePay","钱包","1655677832","13364","1559301101","4810","0.20% + 1.00% + 单笔 4,500","单笔 900","1371882037","1461079171","稳定"],
+["2026-05-21","印尼","YY9","ClickPay","钱包","751492848","6599","853780521","1471","0.60% + 1.00% + 单笔 5,000","单笔 1,000","709794935","469093485","代付增长"],
+["2026-05-21","印尼","XX5","PayIngPay","钱包","741178876","2470","373545194","591","1.10% + 0.80% + 单笔 4,500","0.15% + 单笔 1,300","440031653","409458175","观察代付下降"],
+["2026-05-21","印尼","XX6","JayaPay","钱包","559427878","2900","515069039","924","1.10% + 0.95%","单笔 800","1091838089","518564586","代收下降"],
+["2026-05-21","印尼","66GAME","CoverPay","银行","207034315","913","160179954","224","1.10% + 0.40% + 单笔 4,500","0.20% + 单笔 1,000","237598714","250318919","异常下降"],
+["2026-05-21","印尼","YY9","StarPay","钱包","235738835","808","98097692","163","1.10% + 0.70% + 单笔 5,000","0.20% + 单笔 1,300","159417361","116294005",""],
+["2026-05-21","印尼","XX7","NewBayarPay","钱包","178727078","2128","42599147","184","1.10% + 0.50% + 单笔 5,000","0.20% + 单笔 1,300","19294311","69012283","代收大涨"],
+["2026-05-21","印尼","XX5","KILPay","银行","47759522","256","106114248","57","1.10%","-","164720752","113771041","代收下降"],
+["2026-05-20","印尼","YY9","YerePay","钱包","1371882037","12000","1461079171","4300","0.20% + 1.00% + 单笔 4,500","单笔 900","1200000000","1300000000",""],
+["2026-05-20","印尼","YY9","ClickPay","钱包","709794935","6000","469093485","1400","0.60% + 1.00% + 单笔 5,000","单笔 1,000","650000000","450000000",""]
+];
+
+function parseCSV(text){
+  const rows=[];let row=[],cell="",quote=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(c=='"'&&quote&&n=='"'){cell+='"';i++}
+    else if(c=='"'){quote=!quote}
+    else if(c==","&&!quote){row.push(cell.trim());cell=""}
+    else if((c=="\n"||c=="\r")&&!quote){if(cell||row.length){row.push(cell.trim());rows.push(row);row=[];cell=""}}
+    else cell+=c;
+  }
+  if(cell||row.length){row.push(cell.trim());rows.push(row)}
+  return rows;
+}
+
+function toNum(v){return Number(String(v||"0").replace(/[,%\s]/g,""))||0}
+function fmt(n){return Math.round(n).toLocaleString("en-US")}
+function pct(a,b){return b?((a/b)*100):0}
+function cmp(today,yesterday){if(!yesterday)return 0;return ((today-yesterday)/yesterday)*100}
+function dateStr(d){return d.toISOString().slice(0,10)}
+
+async function load(){
+  try{
+    if(SHEET_CSV_URL.includes("PASTE_GOOGLE")){
+      rawData = demoData.map(mapRow);
+    }else{
+      const res = await fetch(SHEET_CSV_URL);
+      const text = await res.text();
+      const rows = parseCSV(text).slice(1);
+      rawData = rows.filter(r=>r.length>3).map(mapRow);
+    }
+  }catch(e){
+    rawData = demoData.map(mapRow);
+  }
+  initOptions();
+  applyFilters();
+}
+
+function mapRow(r){
+  return {
+    date:r[0]||"",
+    country:r[1]||"",
+    platform:r[2]||"",
+    provider:r[3]||"",
+    type:r[4]||"",
+    receive:toNum(r[5]),
+    receiveOrders:toNum(r[6]),
+    payout:toNum(r[7]),
+    payoutOrders:toNum(r[8]),
+    receiveRate:r[9]||"-",
+    payoutRate:r[10]||"-",
+    yesterdayReceive:toNum(r[11]),
+    yesterdayPayout:toNum(r[12]),
+    remark:r[13]||""
+  }
+}
+
+function initOptions(){
+  const countries=["所有明细",...new Set(rawData.map(x=>x.country).filter(Boolean))];
+  countryTabs.innerHTML = countries.map((c,i)=>`<button class="tab ${i==0?'active':''}" onclick="setCountry('${c}',this)">${c}</button>`).join("");
+  fillSelect("platform",[...new Set(rawData.map(x=>x.platform).filter(Boolean))]);
+  fillSelect("provider",[...new Set(rawData.map(x=>x.provider).filter(Boolean))]);
+  fillSelect("type",[...new Set(rawData.map(x=>x.type).filter(Boolean))]);
+  if(!startDate.value && rawData[0]?.date){startDate.value=rawData[0].date;endDate.value=rawData[0].date}
+}
+
+function fillSelect(id,arr){
+  const el=document.getElementById(id);
+  const first=el.options[0].outerHTML;
+  el.innerHTML=first+arr.map(v=>`<option value="${v}">${v}</option>`).join("");
+}
+
+function setCountry(c,btn){
+  currentCountry = c==="所有明细" ? "" : c;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  applyFilters();
+}
+
+function applyFilters(){
+  const s=startDate.value,e=endDate.value,p=platform.value,pr=provider.value,t=type.value,q=search.value.toLowerCase();
+  let data=rawData.filter(x=>
+    (!s||x.date>=s)&&(!e||x.date<=e)&&
+    (!currentCountry||x.country===currentCountry)&&
+    (!p||x.platform===p)&&(!pr||x.provider===pr)&&(!t||x.type===t)&&
+    (!q||JSON.stringify(x).toLowerCase().includes(q))
+  );
+  render(data);
+}
+
+function resetFilters(){
+  platform.value="";provider.value="";type.value="";search.value="";
+  currentCountry="";
+  document.querySelectorAll(".tab").forEach((x,i)=>x.classList.toggle("active",i===0));
+  applyFilters();
+}
+
+function quickDate(back){
+  const d=new Date();d.setDate(d.getDate()-back);
+  startDate.value=dateStr(d);endDate.value=dateStr(d);applyFilters();
+}
+
+function quickRange(days){
+  const e=new Date(),s=new Date();s.setDate(e.getDate()-days+1);
+  startDate.value=dateStr(s);endDate.value=dateStr(e);applyFilters();
+}
+
+function render(data){
+  const totalReceive=data.reduce((a,b)=>a+b.receive,0);
+  const totalPayout=data.reduce((a,b)=>a+b.payout,0);
+  const totalOrders=data.reduce((a,b)=>a+b.receiveOrders+b.payoutOrders,0);
+  const receiveFee=data.reduce((a,b)=>a+b.receive*0.011,0);
+  const payoutFee=data.reduce((a,b)=>a+b.payoutOrders*1000,0);
+  const totalFee=receiveFee+payoutFee;
+
+  cProviders.innerText=new Set(data.map(x=>x.provider)).size;
+  cPlatforms.innerText=new Set(data.map(x=>x.platform)).size;
+  cReceive.innerText=fmt(totalReceive);
+  cPayout.innerText=fmt(totalPayout);
+  cTotal.innerText=fmt(totalReceive+totalPayout);
+  cOrders.innerText=fmt(totalOrders);
+  cReceiveFee.innerText=fmt(receiveFee);
+  cPayoutFee.innerText=fmt(payoutFee);
+  cFee.innerText=fmt(totalFee);
+  title.innerText=(currentCountry||"所有明细")+" 所有明细";
+
+  tbody.innerHTML=data.map(x=>{
+    const total=x.receive+x.payout;
+    const orders=x.receiveOrders+x.payoutOrders;
+    const rf=pct(x.receive,totalReceive);
+    const pf=pct(x.payout,totalPayout);
+    const rc=cmp(x.receive,x.yesterdayReceive);
+    const pc=cmp(x.payout,x.yesterdayPayout);
+    const fee=x.receive*0.011+x.payoutOrders*1000;
+    const abnormal=rc<-30||pc<-30;
+    return `<tr class="${abnormal?'abnormal':''}">
+      <td>${x.date}</td><td>${x.country}</td><td>${x.provider}</td>
+      <td>${fmt(x.receive)}</td><td><span class="percent">${rf.toFixed(2)}%</span><span class="bar"></span></td><td>${fmt(x.receiveOrders)}</td>
+      <td>${fmt(x.payout)}</td><td><span class="percent">${pf.toFixed(2)}%</span><span class="bar"></span></td><td>${fmt(x.payoutOrders)}</td>
+      <td>${fmt(total)}</td><td>${fmt(orders)}</td>
+      <td>${x.receiveRate}</td><td>${fmt(x.receive*0.011)}</td>
+      <td>${x.payoutRate}</td><td>${fmt(x.payoutOrders*1000)}</td>
+      <td>${fmt(fee)}</td><td>${pct(fee,total).toFixed(2)}%</td>
+      <td>${fmt(x.yesterdayReceive)}</td><td><span class="${rc>=0?'green':'red'}">${rc>=0?'+':''}${rc.toFixed(2)}%</span></td>
+      <td>${fmt(x.yesterdayPayout)}</td><td><span class="${pc>=0?'green':'red'}">${pc>=0?'+':''}${pc.toFixed(2)}%</span></td>
+      <td>${x.remark||'<span class="muted">-</span>'}</td>
+    </tr>`
+  }).join("");
+}
+
+load();
+setInterval(load,30000);
+</script>
+</body>
+</html>
