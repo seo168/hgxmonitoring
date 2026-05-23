@@ -53,7 +53,6 @@ tr:hover{background:#f8fbff}.warn{background:#fff1f2}
 .modal-card{background:#fff;border-radius:18px;max-width:780px;width:100%;max-height:80vh;overflow:auto;padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-close{border:0;background:#fee2e2;color:#dc2626;border-radius:10px;padding:8px 12px;font-weight:900;cursor:pointer}
 .detail-grid{display:grid;grid-template-columns:180px 1fr;border:1px solid #e2e8f0;border-bottom:0}.detail-grid div{padding:10px;border-bottom:1px solid #e2e8f0}.detail-grid div:nth-child(odd){background:#f8fafc;font-weight:900;color:#475569}
 @media(max-width:1100px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:12px}.filters{grid-template-columns:1fr 1fr}.actions{grid-column:span 2}.cards{grid-template-columns:1fr 1fr}.header{align-items:flex-start}}
-.modules{display:none !important;}
 </style>
 </head>
 <body>
@@ -72,6 +71,7 @@ tr:hover{background:#f8fbff}.warn{background:#fff1f2}
     <div class="lang"><button id="zhBtn" class="active" onclick="setLang('zh')">🇨🇳</button><button id="enBtn" onclick="setLang('en')">🇺🇸</button></div>
   </div>
 
+  <section class="modules" id="moduleTabs"></section>
   <section class="subtabs" id="subTabs"></section>
 
   <section class="filters">
@@ -417,7 +417,7 @@ function computeCard(f){
 function renderTable(){
   const schema=SCHEMAS[currentPage];
   $("tableTitle").innerText=schema.title[lang];
-  $("tableDesc").innerText="";
+  $("tableDesc").innerText=`Sheet: ${currentPage} | GID: ${SHEETS[currentPage].gid}`;
   $("thead").innerHTML=schema.headers.map(h=>`<th onclick="sortBy('${h}')">${escapeHtml(h)} ${sortKey===h?(sortDir===1?"↑":"↓"):"↕"}</th>`).join("")+`<th>${t("detail")}</th>`;
 
   let rows=[...filteredRows];
