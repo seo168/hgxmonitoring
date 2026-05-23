@@ -405,13 +405,21 @@ function quickRange(days){
   applyFilters();
 }
 
-function toDate(d){return d.toISOString().slice(0,10)}
+function toDate(d){   const y = d.getFullYear();   const m = String(d.getMonth() + 1).padStart(2, "0");   const day = String(d.getDate()).padStart(2, "0");   return `${y}-${m}-${day}`; }
 
 function normalizeDate(v){
-  v=String(v||"").trim();
-  if(/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  const d=new Date(v);
-  if(!isNaN(d)) return d.toISOString().slice(0,10);
+  v = String(v || "").trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+
+  const d = new Date(v);
+  if (!isNaN(d)) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
   return v;
 }
 
