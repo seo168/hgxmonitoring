@@ -71,7 +71,9 @@ tr:hover{background:#f8fbff}.warn{background:#fff1f2}
     <div class="lang"><button id="zhBtn" class="active" onclick="setLang('zh')">🇨🇳</button><button id="enBtn" onclick="setLang('en')">🇺🇸</button></div>
   </div>
 
-  <section class="modules" id="moduleTabs"></section>
+  .modules{
+display:none;
+}
   <section class="subtabs" id="subTabs"></section>
 
   <section class="filters">
@@ -417,7 +419,7 @@ function computeCard(f){
 function renderTable(){
   const schema=SCHEMAS[currentPage];
   $("tableTitle").innerText=schema.title[lang];
-  $("tableDesc").innerText=`Sheet: ${currentPage} | GID: ${SHEETS[currentPage].gid}`;
+  $("tableDesc").innerText="";
   $("thead").innerHTML=schema.headers.map(h=>`<th onclick="sortBy('${h}')">${escapeHtml(h)} ${sortKey===h?(sortDir===1?"↑":"↓"):"↕"}</th>`).join("")+`<th>${t("detail")}</th>`;
 
   let rows=[...filteredRows];
