@@ -1,454 +1,996 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Monitoring Data Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hensem Dashboard</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,"Microsoft YaHei",sans-serif}
-body{background:#f4f8ff;color:#102033}
-.app{display:flex;min-height:100vh}
-.sidebar{width:245px;background:#0c1729;color:white;position:fixed;top:0;bottom:0;padding:18px 14px}
-.logo{display:flex;gap:12px;align-items:center;margin-bottom:28px}
-.logo-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#14b8a6,#2563eb);display:grid;place-items:center;font-size:12px;font-weight:900}
-.logo h2{font-size:17px}.logo p{font-size:11px;color:#9fb3ce;margin-top:3px}
-.side-title{font-size:12px;color:#7488a8;margin:22px 8px 10px}
-.menu{display:flex;align-items:center;justify-content:space-between;padding:14px 12px;border-radius:14px;margin-bottom:10px;color:#dce9ff;font-weight:800}
-.menu.active{background:#1d4ed8;box-shadow:inset 0 0 0 1px #60a5fa66}
-.badge{font-size:11px;background:#064e3b;color:#86efac;padding:4px 8px;border-radius:20px}
-.main{margin-left:245px;width:calc(100% - 245px);padding:18px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.header h1{font-size:22px}
-.lang{display:flex;gap:8px;background:#fff;border:1px solid #dce7f5;border-radius:18px;padding:6px}
-.lang button{border:0;background:transparent;font-size:22px;cursor:pointer;border-radius:12px;padding:5px 9px}
-.lang button.active{background:#eaf2ff}
-.box{background:#fff;border:1px solid #dce7f5;border-radius:18px;box-shadow:0 8px 24px #1d4ed80d}
-.tabs{padding:14px;display:flex;gap:10px;overflow:auto;margin-bottom:12px}
-.tabs button{border:0;background:transparent;color:#31506d;font-weight:800;padding:10px 18px;border-radius:13px;white-space:nowrap;cursor:pointer}
-.tabs button.active{background:#eff6ff;color:#1d4ed8;box-shadow:0 3px 12px #2563eb17}
-.filters{padding:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px}
-.field label{display:block;font-size:12px;color:#64748b;margin-bottom:6px;font-weight:700}
-.field input,.field select{width:100%;height:40px;border:1px solid #cbd5e1;border-radius:11px;padding:0 10px;background:white;color:#102033}
-.actions{display:flex;gap:8px;align-items:end}
-.btn{border:0;border-radius:11px;padding:11px 16px;font-weight:900;cursor:pointer}
-.primary{background:#2563eb;color:white}
-.light{background:#eef4ff;color:#1d4ed8}
-.quick{padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.quick span{font-size:13px;color:#64748b;font-weight:700}
-.quick button{border:0;border-radius:10px;background:#eef5ff;color:#1d4ed8;padding:7px 13px;font-weight:800;cursor:pointer}
-.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px}
-.card{background:white;border:1px solid #dce7f5;border-radius:15px;padding:14px;box-shadow:0 5px 14px #1e293b0a}
-.card small{color:#64748b;font-weight:800}
-.card b{display:block;font-size:19px;margin-top:6px}
-.panel{padding:18px}
-.panel-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
-.panel h2{font-size:22px}
-.desc{font-size:13px;color:#475569;margin-top:8px}
-.table-wrap{overflow:auto;border-top:1px solid #e2e8f0}
-table{width:100%;border-collapse:collapse;min-width:1780px}
-th{background:#f8fafc;color:#475569;font-size:12px;text-align:left;padding:13px;border-bottom:1px solid #e2e8f0;white-space:nowrap}
-td{padding:12px;border-bottom:1px solid #e2e8f0;font-size:12px;white-space:nowrap}
-tr:hover{background:#f8fbff}
-tr.warn{background:#fff1f2}
-.pill{display:inline-block;padding:4px 8px;border-radius:20px;font-weight:900}
-.good{background:#dcfce7;color:#16a34a}
-.bad{background:#fee2e2;color:#dc2626}
-.neutral{background:#e2e8f0;color:#334155}
-.bar{display:inline-block;width:38px;height:5px;border-radius:20px;background:#14b8a6;margin-left:5px;vertical-align:middle}
-.footer{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:#64748b;font-size:13px}
-.footer button{border:0;background:#eef4ff;color:#1d4ed8;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,Arial,sans-serif;
+}
+
+body{
+background:#f4f7fb;
+color:#1e293b;
+}
+
+.app{
+display:flex;
+min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:240px;
+background:#081426;
+color:white;
+padding:18px 14px;
+position:fixed;
+top:0;
+left:0;
+bottom:0;
+overflow:auto;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:28px;
+}
+
+.logo-icon{
+width:44px;
+height:44px;
+border-radius:14px;
+background:linear-gradient(135deg,#06b6d4,#2563eb);
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:900;
+font-size:13px;
+}
+
+.logo h2{
+font-size:18px;
+}
+
+.logo p{
+font-size:11px;
+color:#8ea3c0;
+}
+
+.side-title{
+font-size:12px;
+color:#6b7d99;
+margin:22px 8px 10px;
+}
+
+.menu{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:14px 12px;
+border-radius:14px;
+margin-bottom:10px;
+cursor:pointer;
+transition:.2s;
+font-weight:700;
+}
+
+.menu:hover{
+background:#12223b;
+}
+
+.menu.active{
+background:#1d4ed8;
+}
+
+.badge{
+background:#064e3b;
+color:#86efac;
+padding:4px 8px;
+border-radius:999px;
+font-size:11px;
+}
+
+/* MAIN */
+
+.main{
+margin-left:240px;
+width:calc(100% - 240px);
+padding:18px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:14px;
+}
+
+.header h1{
+font-size:24px;
+}
+
+.lang{
+display:flex;
+gap:8px;
+background:white;
+border:1px solid #dbe5f3;
+padding:6px;
+border-radius:16px;
+}
+
+.lang button{
+border:0;
+background:transparent;
+font-size:22px;
+cursor:pointer;
+padding:4px 8px;
+border-radius:10px;
+}
+
+.lang button.active{
+background:#eef4ff;
+}
+
+/* MODULE TABS */
+
+.modules{
+display:flex;
+gap:10px;
+overflow:auto;
+margin-bottom:12px;
+}
+
+.modules button{
+border:0;
+background:white;
+padding:12px 18px;
+border-radius:14px;
+font-weight:800;
+cursor:pointer;
+border:1px solid #dce7f5;
+white-space:nowrap;
+}
+
+.modules button.active{
+background:#1d4ed8;
+color:white;
+}
+
+/* SUB MENU */
+
+.subtabs{
+display:flex;
+gap:10px;
+overflow:auto;
+margin-bottom:12px;
+}
+
+.subtabs button{
+border:0;
+background:white;
+padding:10px 16px;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+border:1px solid #dce7f5;
+white-space:nowrap;
+}
+
+.subtabs button.active{
+background:#eef5ff;
+color:#1d4ed8;
+}
+
+/* FILTER */
+
+.filters{
+background:white;
+border:1px solid #dce7f5;
+border-radius:18px;
+padding:16px;
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+margin-bottom:12px;
+}
+
+.field label{
+display:block;
+font-size:12px;
+margin-bottom:6px;
+color:#64748b;
+font-weight:700;
+}
+
+.field input,
+.field select{
+width:100%;
+height:40px;
+border:1px solid #cbd5e1;
+border-radius:12px;
+padding:0 10px;
+}
+
+.actions{
+display:flex;
+gap:8px;
+align-items:end;
+}
+
+.btn{
+border:0;
+padding:11px 16px;
+border-radius:12px;
+cursor:pointer;
+font-weight:800;
+}
+
+.primary{
+background:#2563eb;
+color:white;
+}
+
+.light{
+background:#eef5ff;
+color:#1d4ed8;
+}
+
+/* QUICK */
+
+.quick{
+background:white;
+border:1px solid #dce7f5;
+border-radius:16px;
+padding:12px 16px;
+display:flex;
+gap:8px;
+align-items:center;
+flex-wrap:wrap;
+margin-bottom:12px;
+}
+
+.quick button{
+border:0;
+background:#eef5ff;
+color:#1d4ed8;
+padding:7px 13px;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
+
+/* CARDS */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+margin-bottom:12px;
+}
+
+.card{
+background:white;
+border:1px solid #dce7f5;
+border-radius:16px;
+padding:15px;
+}
+
+.card small{
+color:#64748b;
+font-weight:700;
+}
+
+.card b{
+display:block;
+font-size:20px;
+margin-top:6px;
+}
+
+/* TABLE */
+
+.panel{
+background:white;
+border:1px solid #dce7f5;
+border-radius:18px;
+padding:18px;
+}
+
+.panel h2{
+font-size:22px;
+margin-bottom:8px;
+}
+
+.desc{
+font-size:13px;
+color:#64748b;
+margin-bottom:18px;
+}
+
+.table-wrap{
+overflow:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:1800px;
+}
+
+th{
+background:#f8fafc;
+padding:13px;
+text-align:left;
+font-size:12px;
+border-bottom:1px solid #e2e8f0;
+white-space:nowrap;
+}
+
+td{
+padding:13px;
+font-size:12px;
+border-bottom:1px solid #e2e8f0;
+white-space:nowrap;
+}
+
+tr:hover{
+background:#f8fbff;
+}
+
+tr.warn{
+background:#fff1f2;
+}
+
+.pill{
+display:inline-block;
+padding:4px 8px;
+border-radius:999px;
+font-weight:800;
+font-size:11px;
+}
+
+.good{
+background:#dcfce7;
+color:#16a34a;
+}
+
+.bad{
+background:#fee2e2;
+color:#dc2626;
+}
+
+.bar{
+display:inline-block;
+width:42px;
+height:5px;
+background:#10b981;
+border-radius:999px;
+margin-left:6px;
+vertical-align:middle;
+}
+
+.footer{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:14px;
+font-size:13px;
+color:#64748b;
+}
+
+.footer button{
+border:0;
+background:#eef5ff;
+color:#1d4ed8;
+padding:9px 13px;
+border-radius:10px;
+font-weight:800;
+cursor:pointer;
+}
+
+/* MOBILE */
+
 @media(max-width:1000px){
-.sidebar{display:none}.main{margin-left:0;width:100%;padding:12px}
-.filters{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr 1fr}
-.header{align-items:flex-start}.panel-top{display:block}
+
+.sidebar{
+display:none;
+}
+
+.main{
+margin-left:0;
+width:100%;
+padding:12px;
+}
+
+.filters{
+grid-template-columns:1fr 1fr;
+}
+
+.cards{
+grid-template-columns:1fr 1fr;
+}
+
 }
 </style>
 </head>
 
 <body>
-<div class="app">
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-badge">Data</div>
-    <div>
-      <h2 data-i18n="brand">数据监控后台</h2>
-      <p>Data Monitoring Dashboard</p>
-    </div>
-  </div>
 
-  <div class="side-title" data-i18n="module">系统模块</div>
-  <div class="menu">💸 <span data-i18n="withdraw">提现/自动出款统计</span><span class="badge" data-i18n="connected">已接入</span></div>
-  <div class="menu">🎫 <span data-i18n="ticket">工单/客服</span><span class="badge" data-i18n="connected">已接入</span></div>
-  <div class="menu active">📊 <span data-i18n="thirdparty">三方量/费率</span><span class="badge" data-i18n="connected">已接入</span></div>
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<div class="logo">
+<div class="logo-icon">Data</div>
+
+<div>
+<h2>Hensem数据后台</h2>
+<p>Hensem Data Dashboard</p>
+</div>
+</div>
+
+<div class="side-title">系统模块</div>
+
+<div class="menu active">
+<span>💸 提现/自动出款统计</span>
+<span class="badge">已接入</span>
+</div>
+
+<div class="menu">
+<span>🎫 工单/客服</span>
+<span class="badge">已接入</span>
+</div>
+
+<div class="menu">
+<span>📊 三方量/费率</span>
+<span class="badge">已接入</span>
+</div>
+
 </aside>
 
+<!-- MAIN -->
+
 <main class="main">
-  <div class="header">
-    <div>
-      <h1 data-i18n="pageTitle">三方数据监控</h1>
-      <p class="desc" data-i18n="subtitle">从 Google Sheet 自动读取数据，支持日期、平台、国家、三方筛选与异常提醒。</p>
-    </div>
-    <div class="lang">
-      <button id="zhBtn" class="active" onclick="setLang('zh')">🇨🇳</button>
-      <button id="enBtn" onclick="setLang('en')">🇺🇸</button>
-    </div>
-  </div>
 
-  <section class="box tabs" id="countryTabs"></section>
+<div class="header">
 
-  <section class="box filters">
-    <div class="field"><label data-i18n="startDate">开始日期</label><input type="date" id="startDate"></div>
-    <div class="field"><label data-i18n="endDate">结束日期</label><input type="date" id="endDate"></div>
-    <div class="field"><label data-i18n="platform">平台</label><select id="platform"><option value="" data-i18n="allPlatform">全部平台</option></select></div>
-    <div class="field"><label data-i18n="provider">三方</label><select id="provider"><option value="" data-i18n="allProvider">全部三方</option></select></div>
-    <div class="field"><label data-i18n="type">类型</label><select id="type"><option value="" data-i18n="allType">全部类型</option></select></div>
-    <div class="field"><label data-i18n="search">搜索</label><input id="search" placeholder="YerePay / GCASH / PH19"></div>
-    <div class="actions">
-      <button class="btn primary" onclick="load()" data-i18n="reload">重新读取</button>
-      <button class="btn light" onclick="resetFilters()" data-i18n="reset">重置</button>
-    </div>
-  </section>
+<div>
+<h1>数据监控后台</h1>
+<p class="desc">Google Sheet Realtime Monitoring Dashboard</p>
+</div>
 
-  <section class="box quick">
-    <span data-i18n="quickDate">快捷日期:</span>
-    <button onclick="quickDate(0)" data-i18n="today">今天</button>
-    <button onclick="quickDate(1)" data-i18n="yesterday">昨日</button>
-    <button onclick="quickDate(2)" data-i18n="beforeYesterday">前日</button>
-    <button onclick="quickRange(7)" data-i18n="week">本周</button>
-    <button onclick="quickRange(30)" data-i18n="month">本月</button>
-  </section>
+<div class="lang">
+<button class="active">🇨🇳</button>
+<button>🇺🇸</button>
+</div>
 
-  <section class="cards">
-    <div class="card"><small data-i18n="providers">主三方</small><b id="cProviders">0</b></div>
-    <div class="card"><small data-i18n="platforms">平台</small><b id="cPlatforms">0</b></div>
-    <div class="card"><small data-i18n="receiveAmount">代收金额</small><b id="cReceive">0</b></div>
-    <div class="card"><small data-i18n="payoutAmount">代付金额</small><b id="cPayout">0</b></div>
-    <div class="card"><small data-i18n="totalAmount">合计金额</small><b id="cTotal">0</b></div>
-    <div class="card"><small data-i18n="orders">合计笔数</small><b id="cOrders">0</b></div>
-    <div class="card"><small data-i18n="receiveFee">代收手续费</small><b id="cReceiveFee">0</b></div>
-    <div class="card"><small data-i18n="payoutFee">代付手续费</small><b id="cPayoutFee">0</b></div>
-    <div class="card"><small data-i18n="totalFee">合计手续费</small><b id="cFee">0</b></div>
-    <div class="card"><small data-i18n="abnormal">异常数量</small><b id="cAbnormal">0</b></div>
-    <div class="card"><small data-i18n="avgReceiveRate">代收占比最高</small><b id="cTopReceive">-</b></div>
-    <div class="card"><small data-i18n="avgPayoutRate">代付占比最高</small><b id="cTopPayout">-</b></div>
-  </section>
+</div>
 
-  <section class="box panel">
-    <div class="panel-top">
-      <div>
-        <h2 id="tableTitle">所有明细</h2>
-        <p class="desc" data-i18n="tableDesc">系统会自动统计金额、笔数、手续费、昨日对比，下降超过 30% 会标红提醒。</p>
-      </div>
-    </div>
+<!-- TOP MODULE -->
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th data-i18n="date">日期</th>
-            <th data-i18n="country">国家</th>
-            <th data-i18n="platform">平台</th>
-            <th data-i18n="provider">三方</th>
-            <th data-i18n="type">类型</th>
-            <th data-i18n="direction">业务方向</th>
-            <th data-i18n="receiveAmount">代收金额</th>
-            <th data-i18n="receivePercent">代收占比</th>
-            <th data-i18n="receiveOrders">代收笔数</th>
-            <th data-i18n="payoutAmount">代付金额</th>
-            <th data-i18n="payoutPercent">代付占比</th>
-            <th data-i18n="payoutOrders">代付笔数</th>
-            <th data-i18n="totalAmount">合计金额</th>
-            <th data-i18n="orders">合计笔数</th>
-            <th data-i18n="receiveRate">代收费率</th>
-            <th data-i18n="receiveFee">代收手续费</th>
-            <th data-i18n="payoutRate">代付费率</th>
-            <th data-i18n="payoutFee">代付手续费</th>
-            <th data-i18n="feePercent">手续费占比</th>
-            <th data-i18n="yReceive">昨日代收</th>
-            <th data-i18n="receiveCompare">代收对比</th>
-            <th data-i18n="yPayout">昨日代付</th>
-            <th data-i18n="payoutCompare">代付对比</th>
-            <th data-i18n="remark">备注</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+<div class="modules">
 
-    <div class="footer">
-      <span id="rowInfo">0 rows</span>
-      <div>
-        <button onclick="exportCSV()" data-i18n="export">导出 CSV</button>
-      </div>
-    </div>
-  </section>
+<button class="active">工单统计</button>
+<button>操作人统计</button>
+<button>自动出款统计</button>
+<button>三方量费率</button>
+
+</div>
+
+<!-- SUB TAB -->
+
+<div class="subtabs">
+
+<button class="active">工单看板</button>
+<button>各平台类型统计</button>
+<button>全部盘口</button>
+<button>印尼盘口</button>
+<button>巴基斯坦盘口</button>
+<button>马来盘口</button>
+<button>缅甸盘口</button>
+
+</div>
+
+<!-- FILTER -->
+
+<section class="filters">
+
+<div class="field">
+<label>开始日期</label>
+<input type="date" id="startDate">
+</div>
+
+<div class="field">
+<label>结束日期</label>
+<input type="date" id="endDate">
+</div>
+
+<div class="field">
+<label>国家</label>
+<select id="country">
+<option value="">全部国家</option>
+</select>
+</div>
+
+<div class="field">
+<label>盘口 / 平台</label>
+<select id="platform">
+<option value="">全部平台</option>
+</select>
+</div>
+
+<div class="field">
+<label>操作人</label>
+<select id="operator">
+<option value="">全部操作人</option>
+</select>
+</div>
+
+<div class="actions">
+<button class="btn primary" onclick="applyFilters()">查询</button>
+<button class="btn light" onclick="resetFilters()">重置</button>
+<button class="btn light" onclick="exportCSV()">导出</button>
+</div>
+
+</section>
+
+<!-- QUICK -->
+
+<div class="quick">
+
+<span>快捷日期:</span>
+
+<button onclick="quickDate(0)">今天</button>
+<button onclick="quickDate(1)">昨日</button>
+<button onclick="quickDate(2)">前日</button>
+<button onclick="quickRange(7)">本周</button>
+<button onclick="quickRange(30)">本月</button>
+
+</div>
+
+<!-- CARDS -->
+
+<section class="cards">
+
+<div class="card">
+<small>总订单数</small>
+<b id="cOrders">0</b>
+</div>
+
+<div class="card">
+<small>成功订单</small>
+<b id="cSuccess">0</b>
+</div>
+
+<div class="card">
+<small>驳回订单</small>
+<b id="cReject">0</b>
+</div>
+
+<div class="card">
+<small>自动处理</small>
+<b id="cAuto">0</b>
+</div>
+
+<div class="card">
+<small>人工处理</small>
+<b id="cManual">0</b>
+</div>
+
+<div class="card">
+<small>处理率</small>
+<b id="cRate">0%</b>
+</div>
+
+</section>
+
+<!-- TABLE -->
+
+<section class="panel">
+
+<h2>操作人明细表</h2>
+
+<p class="desc">
+按日期 / 平台 / 操作人查看明细数据，自动计算处理率、驳回率、自动占比。
+</p>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>日期</th>
+<th>国家</th>
+<th>平台</th>
+<th>操作人</th>
+<th>总数</th>
+<th>已处理</th>
+<th>驳回</th>
+<th>自动处理</th>
+<th>人工处理</th>
+<th>自动占比</th>
+<th>人工占比</th>
+<th>处理率</th>
+<th>驳回率</th>
+<th>平均处理时间</th>
+<th>昨日平均处理时间</th>
+<th>对比%</th>
+<th>备注</th>
+</tr>
+
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+</div>
+
+<div class="footer">
+
+<span id="rowInfo">0 rows</span>
+
+<button onclick="exportCSV()">导出 CSV</button>
+
+</div>
+
+</section>
+
 </main>
+
 </div>
 
 <script>
+
+/*
+
+GOOGLE SHEET HEADER:
+
+日期,国家,平台,操作人,总数,已处理,驳回,自动处理,人工处理,平均处理时间,昨日平均处理时间,备注
+
+*/
+
 const SHEET_CSV_URL = "PASTE_GOOGLE_SHEET_CSV_LINK_HERE";
-const AUTO_REFRESH_MS = 30000;
 
-let lang="zh";
-let rawData=[];
-let filteredData=[];
-let currentCountry="";
+let rawData = [];
+let filteredData = [];
 
-const I18N={
-zh:{
-brand:"数据监控后台",module:"系统模块",withdraw:"提现/自动出款统计",ticket:"工单/客服",thirdparty:"三方量/费率",connected:"已接入",
-pageTitle:"三方数据监控",subtitle:"从 Google Sheet 自动读取数据，支持日期、平台、国家、三方筛选与异常提醒。",
-startDate:"开始日期",endDate:"结束日期",platform:"平台",provider:"三方",type:"类型",search:"搜索",
-allPlatform:"全部平台",allProvider:"全部三方",allType:"全部类型",reload:"重新读取",reset:"重置",
-quickDate:"快捷日期:",today:"今天",yesterday:"昨日",beforeYesterday:"前日",week:"本周",month:"本月",
-providers:"主三方",platforms:"平台",receiveAmount:"代收金额",payoutAmount:"代付金额",totalAmount:"合计金额",orders:"合计笔数",
-receiveFee:"代收手续费",payoutFee:"代付手续费",totalFee:"合计手续费",abnormal:"异常数量",avgReceiveRate:"代收占比最高",avgPayoutRate:"代付占比最高",
-tableDesc:"系统会自动统计金额、笔数、手续费、昨日对比，下降超过 30% 会标红提醒。",
-date:"日期",country:"国家",direction:"业务方向",receivePercent:"代收占比",receiveOrders:"代收笔数",payoutPercent:"代付占比",payoutOrders:"代付笔数",
-receiveRate:"代收费率",payoutRate:"代付费率",feePercent:"手续费占比",yReceive:"昨日代收",receiveCompare:"代收对比",yPayout:"昨日代付",payoutCompare:"代付对比",remark:"备注",
-export:"导出 CSV",allDetails:"所有明细",noData:"没有数据"
-},
-en:{
-brand:"Data Monitoring",module:"System Modules",withdraw:"Withdrawal / Auto Payout",ticket:"Ticket / Customer Service",thirdparty:"Third Party Volume / Fee",connected:"Connected",
-pageTitle:"Third Party Data Monitoring",subtitle:"Read data from Google Sheet automatically. Supports date, platform, country, provider filters and abnormal alerts.",
-startDate:"Start Date",endDate:"End Date",platform:"Platform",provider:"Provider",type:"Type",search:"Search",
-allPlatform:"All Platforms",allProvider:"All Providers",allType:"All Types",reload:"Reload",reset:"Reset",
-quickDate:"Quick Date:",today:"Today",yesterday:"Yesterday",beforeYesterday:"Before Yesterday",week:"This Week",month:"This Month",
-providers:"Providers",platforms:"Platforms",receiveAmount:"Receive Amount",payoutAmount:"Payout Amount",totalAmount:"Total Amount",orders:"Total Orders",
-receiveFee:"Receive Fee",payoutFee:"Payout Fee",totalFee:"Total Fee",abnormal:"Abnormal Count",avgReceiveRate:"Top Receive Share",avgPayoutRate:"Top Payout Share",
-tableDesc:"The system calculates amount, orders, fee, yesterday comparison. Drop over 30% will be marked red.",
-date:"Date",country:"Country",direction:"Direction",receivePercent:"Receive Share",receiveOrders:"Receive Orders",payoutPercent:"Payout Share",payoutOrders:"Payout Orders",
-receiveRate:"Receive Rate",payoutRate:"Payout Rate",feePercent:"Fee Share",yReceive:"Yesterday Receive",receiveCompare:"Receive Compare",yPayout:"Yesterday Payout",payoutCompare:"Payout Compare",remark:"Remark",
-export:"Export CSV",allDetails:"All Details",noData:"No Data"
-}
-};
+const demoData = [
 
-const demoRows=[
-["2026-05-21","印尼","YY9","YerePay","钱包","全部方向","1655677832","13364","1559301101","4810","0.20% + 1.00% + 单笔 4,500","单笔 900","1371882037","1461079171","稳定"],
-["2026-05-21","印尼","YY9","ClickPay","钱包","全部方向","751492848","6599","853780521","1471","0.60% + 1.00% + 单笔 5,000","单笔 1,000","709794935","469093485","代付增长"],
-["2026-05-21","印尼","XX5","PayIngPay","钱包","全部方向","741178876","2470","373545194","591","1.10% + 0.80% + 单笔 4,500","0.15% + 单笔 1,300","440031653","409458175","观察代付下降"],
-["2026-05-21","印尼","XX6","JayaPay","钱包","全部方向","559427878","2900","515069039","924","1.10% + 0.95%","单笔 800","1091838089","518564586","代收下降"],
-["2026-05-21","印尼","66GAME","CoverPay","银行","全部方向","207034315","913","160179954","224","1.10% + 0.40% + 单笔 4,500","0.20% + 单笔 1,000","237598714","250318919","异常下降"],
-["2026-05-21","印尼","YY9","StarPay","钱包","全部方向","235738835","808","98097692","163","1.10% + 0.70% + 单笔 5,000","0.20% + 单笔 1,300","159417361","116294005",""],
-["2026-05-21","印尼","XX7","NewBayarPay","钱包","全部方向","178727078","2128","42599147","184","1.10% + 0.50% + 单笔 5,000","0.20% + 单笔 1,300","19294311","69012283","代收大涨"],
-["2026-05-21","巴基斯坦","YY9","BKPay","银行卡","全部方向","47759522","256","106114248","57","1.10%","单笔 1000","164720752","113771041","代收下降"]
+["2026-05-21","巴基斯坦","92PKR","ar067jicj002","89","42","47","0","89","5分58秒","9分44秒","异常偏慢"],
+
+["2026-05-21","巴基斯坦","92PKR","admin","57","57","0","57","0","2分15秒","2分20秒","稳定"],
+
+["2026-05-21","巴基斯坦","92GO","ar067jicj004","50","30","20","0","50","6分22秒","5分12秒","驳回偏高"],
+
+["2026-05-21","印尼","UANG","uangjick02","71","71","3","0","71","9分44秒","11分42秒",""],
+
+["2026-05-21","印尼","UANG","uangjick05","61","61","4","0","61","5分33秒","6分54秒",""],
+
 ];
 
-function t(k){return I18N[lang][k]||k}
-
-function setLang(v){
-  lang=v;
-  document.getElementById("zhBtn").classList.toggle("active",v==="zh");
-  document.getElementById("enBtn").classList.toggle("active",v==="en");
-  document.documentElement.lang=v==="zh"?"zh-CN":"en";
-  document.querySelectorAll("[data-i18n]").forEach(el=>{el.innerText=t(el.dataset.i18n)});
-  document.querySelector('#platform option[value=""]').innerText=t("allPlatform");
-  document.querySelector('#provider option[value=""]').innerText=t("allProvider");
-  document.querySelector('#type option[value=""]').innerText=t("allType");
-  renderCountryTabs();
-  applyFilters();
+function toNum(v){
+return Number(String(v||"0").replace(/[^\d.-]/g,'')) || 0;
 }
 
-function parseCSV(text){
-  const rows=[];let row=[],cell="",quote=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i],n=text[i+1];
-    if(c==='"'&&quote&&n==='"'){cell+='"';i++}
-    else if(c==='"'){quote=!quote}
-    else if(c===','&&!quote){row.push(cell.trim());cell=""}
-    else if((c==='\n'||c==='\r')&&!quote){if(cell||row.length){row.push(cell.trim());rows.push(row);row=[];cell=""}}
-    else cell+=c;
-  }
-  if(cell||row.length){row.push(cell.trim());rows.push(row)}
-  return rows;
+function parseTime(str){
+
+if(!str) return 0;
+
+const m = str.match(/(\d+)/g);
+
+if(!m) return 0;
+
+if(m.length===1) return Number(m[0]);
+
+return Number(m[0])*60 + Number(m[1]);
+
 }
 
-function toNum(v){return Number(String(v||"0").replace(/[,%\s]/g,""))||0}
-function fmt(n){return Math.round(n||0).toLocaleString("en-US")}
-function pct(a,b){return b?((a/b)*100):0}
-function cmp(a,b){return b?((a-b)/b*100):0}
-function dateStr(d){return d.toISOString().slice(0,10)}
+function fmt(n){
+return Math.round(n).toLocaleString("en-US");
+}
+
+function pct(a,b){
+return b ? ((a/b)*100) : 0;
+}
+
+function cmp(a,b){
+return b ? ((a-b)/b*100) : 0;
+}
+
+function dateStr(d){
+return d.toISOString().slice(0,10);
+}
 
 function mapRow(r){
-  return {
-    date:r[0]||"",
-    country:r[1]||"",
-    platform:r[2]||"",
-    provider:r[3]||"",
-    type:r[4]||"",
-    direction:r[5]||"",
-    receive:toNum(r[6]),
-    receiveOrders:toNum(r[7]),
-    payout:toNum(r[8]),
-    payoutOrders:toNum(r[9]),
-    receiveRate:r[10]||"-",
-    payoutRate:r[11]||"-",
-    yReceive:toNum(r[12]),
-    yPayout:toNum(r[13]),
-    remark:r[14]||""
-  };
+
+return{
+
+date:r[0]||"",
+country:r[1]||"",
+platform:r[2]||"",
+operator:r[3]||"",
+total:toNum(r[4]),
+processed:toNum(r[5]),
+reject:toNum(r[6]),
+auto:toNum(r[7]),
+manual:toNum(r[8]),
+avgTime:r[9]||"",
+yAvgTime:r[10]||"",
+remark:r[11]||"",
+
+};
+
 }
 
-async function load(){
-  try{
-    if(SHEET_CSV_URL.includes("PASTE_GOOGLE")){
-      rawData=demoRows.map(mapRow);
-    }else{
-      const res=await fetch(SHEET_CSV_URL+"&t="+Date.now());
-      const text=await res.text();
-      rawData=parseCSV(text).slice(1).filter(r=>r.length>=6).map(mapRow);
-    }
-  }catch(err){
-    rawData=demoRows.map(mapRow);
-  }
-  initSelects();
-  renderCountryTabs();
-  if(!startDate.value&&rawData[0]?.date){startDate.value=rawData[0].date;endDate.value=rawData[0].date}
-  applyFilters();
+async function loadData(){
+
+try{
+
+if(SHEET_CSV_URL.includes("PASTE")){
+
+rawData = demoData.map(mapRow);
+
+}else{
+
+const res = await fetch(SHEET_CSV_URL + "&t=" + Date.now());
+
+const text = await res.text();
+
+const rows = text.trim().split("\n").slice(1);
+
+rawData = rows.map(r=>mapRow(r.split(",")));
+
 }
 
-function initSelects(){
-  fillSelect("platform",[...new Set(rawData.map(x=>x.platform).filter(Boolean))],t("allPlatform"));
-  fillSelect("provider",[...new Set(rawData.map(x=>x.provider).filter(Boolean))],t("allProvider"));
-  fillSelect("type",[...new Set(rawData.map(x=>x.type).filter(Boolean))],t("allType"));
+}catch(e){
+
+rawData = demoData.map(mapRow);
+
 }
 
-function fillSelect(id,arr,label){
-  const el=document.getElementById(id);
-  const val=el.value;
-  el.innerHTML=`<option value="">${label}</option>`+arr.map(x=>`<option value="${x}">${x}</option>`).join("");
-  el.value=arr.includes(val)?val:"";
+initFilters();
+
+applyFilters();
+
 }
 
-function renderCountryTabs(){
-  const countries=[t("allDetails"),...new Set(rawData.map(x=>x.country).filter(Boolean))];
-  document.getElementById("countryTabs").innerHTML=countries.map((c,i)=>{
-    const active=(!currentCountry&&i===0)||currentCountry===c;
-    return `<button class="${active?'active':''}" onclick="setCountry('${i===0?'':c}')">${c}</button>`;
-  }).join("");
+function initFilters(){
+
+fillSelect("country",[...new Set(rawData.map(x=>x.country))]);
+
+fillSelect("platform",[...new Set(rawData.map(x=>x.platform))]);
+
+fillSelect("operator",[...new Set(rawData.map(x=>x.operator))]);
+
 }
 
-function setCountry(c){currentCountry=c;renderCountryTabs();applyFilters()}
+function fillSelect(id,arr){
 
-function quickDate(back){
-  const d=new Date();d.setDate(d.getDate()-back);
-  startDate.value=dateStr(d);endDate.value=dateStr(d);applyFilters();
+const el = document.getElementById(id);
+
+const first = el.options[0].outerHTML;
+
+el.innerHTML = first + arr.map(v=>`<option value="${v}">${v}</option>`).join("");
+
 }
 
-function quickRange(days){
-  const e=new Date(),s=new Date();s.setDate(e.getDate()-days+1);
-  startDate.value=dateStr(s);endDate.value=dateStr(e);applyFilters();
+function applyFilters(){
+
+const s = startDate.value;
+const e = endDate.value;
+const c = country.value;
+const p = platform.value;
+const o = operator.value;
+
+filteredData = rawData.filter(x=>
+
+(!s || x.date >= s) &&
+(!e || x.date <= e) &&
+(!c || x.country === c) &&
+(!p || x.platform === p) &&
+(!o || x.operator === o)
+
+);
+
+render(filteredData);
+
 }
 
 function resetFilters(){
-  startDate.value="";endDate.value="";platform.value="";provider.value="";type.value="";search.value="";currentCountry="";
-  renderCountryTabs();applyFilters();
+
+startDate.value="";
+endDate.value="";
+country.value="";
+platform.value="";
+operator.value="";
+
+applyFilters();
+
 }
 
-["startDate","endDate","platform","provider","type","search"].forEach(id=>{
-  document.addEventListener("input",e=>{if(e.target.id===id)applyFilters()});
-  document.addEventListener("change",e=>{if(e.target.id===id)applyFilters()});
-});
+function quickDate(back){
 
-function applyFilters(){
-  const s=startDate.value,e=endDate.value,p=platform.value,pr=provider.value,tp=type.value,q=search.value.toLowerCase();
-  filteredData=rawData.filter(x=>
-    (!s||x.date>=s)&&(!e||x.date<=e)&&
-    (!currentCountry||x.country===currentCountry)&&
-    (!p||x.platform===p)&&(!pr||x.provider===pr)&&(!tp||x.type===tp)&&
-    (!q||Object.values(x).join(" ").toLowerCase().includes(q))
-  );
-  render(filteredData);
+const d = new Date();
+
+d.setDate(d.getDate()-back);
+
+startDate.value = dateStr(d);
+endDate.value = dateStr(d);
+
+applyFilters();
+
+}
+
+function quickRange(days){
+
+const e = new Date();
+const s = new Date();
+
+s.setDate(e.getDate()-days+1);
+
+startDate.value = dateStr(s);
+endDate.value = dateStr(e);
+
+applyFilters();
+
 }
 
 function render(data){
-  const receive=data.reduce((a,b)=>a+b.receive,0);
-  const payout=data.reduce((a,b)=>a+b.payout,0);
-  const orders=data.reduce((a,b)=>a+b.receiveOrders+b.payoutOrders,0);
-  const receiveFee=data.reduce((a,b)=>a+b.receive*0.011,0);
-  const payoutFee=data.reduce((a,b)=>a+b.payoutOrders*1000,0);
-  const totalFee=receiveFee+payoutFee;
-  const abnormal=data.filter(x=>cmp(x.receive,x.yReceive)<-30||cmp(x.payout,x.yPayout)<-30).length;
 
-  cProviders.innerText=new Set(data.map(x=>x.provider)).size;
-  cPlatforms.innerText=new Set(data.map(x=>x.platform)).size;
-  cReceive.innerText=fmt(receive);
-  cPayout.innerText=fmt(payout);
-  cTotal.innerText=fmt(receive+payout);
-  cOrders.innerText=fmt(orders);
-  cReceiveFee.innerText=fmt(receiveFee);
-  cPayoutFee.innerText=fmt(payoutFee);
-  cFee.innerText=fmt(totalFee);
-  cAbnormal.innerText=abnormal;
+const total = data.reduce((a,b)=>a+b.total,0);
 
-  const topReceive=[...data].sort((a,b)=>b.receive-a.receive)[0];
-  const topPayout=[...data].sort((a,b)=>b.payout-a.payout)[0];
-  cTopReceive.innerText=topReceive?topReceive.provider:"-";
-  cTopPayout.innerText=topPayout?topPayout.provider:"-";
-  tableTitle.innerText=currentCountry||t("allDetails");
-  rowInfo.innerText=`${data.length} rows`;
+const processed = data.reduce((a,b)=>a+b.processed,0);
 
-  if(!data.length){
-    tbody.innerHTML=`<tr><td colspan="24">${t("noData")}</td></tr>`;
-    return;
-  }
+const reject = data.reduce((a,b)=>a+b.reject,0);
 
-  tbody.innerHTML=data.map(x=>{
-    const total=x.receive+x.payout;
-    const totalOrders=x.receiveOrders+x.payoutOrders;
-    const rf=pct(x.receive,receive);
-    const pf=pct(x.payout,payout);
-    const rCmp=cmp(x.receive,x.yReceive);
-    const pCmp=cmp(x.payout,x.yPayout);
-    const rFee=x.receive*0.011;
-    const pFee=x.payoutOrders*1000;
-    const fee=rFee+pFee;
-    const warn=rCmp<-30||pCmp<-30;
+const auto = data.reduce((a,b)=>a+b.auto,0);
 
-    return `<tr class="${warn?'warn':''}">
-      <td>${x.date}</td>
-      <td>${x.country}</td>
-      <td>${x.platform}</td>
-      <td><b>${x.provider}</b></td>
-      <td>${x.type}</td>
-      <td>${x.direction}</td>
-      <td>${fmt(x.receive)}</td>
-      <td><b>${rf.toFixed(2)}%</b><span class="bar"></span></td>
-      <td>${fmt(x.receiveOrders)}</td>
-      <td>${fmt(x.payout)}</td>
-      <td><b>${pf.toFixed(2)}%</b><span class="bar"></span></td>
-      <td>${fmt(x.payoutOrders)}</td>
-      <td><b>${fmt(total)}</b></td>
-      <td>${fmt(totalOrders)}</td>
-      <td>${x.receiveRate}</td>
-      <td>${fmt(rFee)}</td>
-      <td>${x.payoutRate}</td>
-      <td>${fmt(pFee)}</td>
-      <td>${pct(fee,total).toFixed(2)}%</td>
-      <td>${fmt(x.yReceive)}</td>
-      <td><span class="pill ${rCmp>=0?'good':'bad'}">${rCmp>=0?'+':''}${rCmp.toFixed(2)}%</span></td>
-      <td>${fmt(x.yPayout)}</td>
-      <td><span class="pill ${pCmp>=0?'good':'bad'}">${pCmp>=0?'+':''}${pCmp.toFixed(2)}%</span></td>
-      <td>${x.remark||'<span class="pill neutral">-</span>'}</td>
-    </tr>`;
-  }).join("");
+const manual = data.reduce((a,b)=>a+b.manual,0);
+
+cOrders.innerText = fmt(total);
+cSuccess.innerText = fmt(processed);
+cReject.innerText = fmt(reject);
+cAuto.innerText = fmt(auto);
+cManual.innerText = fmt(manual);
+
+cRate.innerText = pct(processed,total).toFixed(2)+"%";
+
+rowInfo.innerText = `${data.length} rows`;
+
+tbody.innerHTML = data.map(x=>{
+
+const autoPct = pct(x.auto,x.total);
+const manualPct = pct(x.manual,x.total);
+const processPct = pct(x.processed,x.total);
+const rejectPct = pct(x.reject,x.total);
+
+const compare = cmp(
+parseTime(x.avgTime),
+parseTime(x.yAvgTime)
+);
+
+const warn = compare > 30 || rejectPct > 50;
+
+return`
+
+<tr class="${warn?'warn':''}">
+
+<td>${x.date}</td>
+
+<td>${x.country}</td>
+
+<td><b>${x.platform}</b></td>
+
+<td>${x.operator}</td>
+
+<td>${fmt(x.total)}</td>
+
+<td>${fmt(x.processed)}</td>
+
+<td>${fmt(x.reject)}</td>
+
+<td>${fmt(x.auto)}</td>
+
+<td>${fmt(x.manual)}</td>
+
+<td>
+${autoPct.toFixed(2)}%
+<span class="bar"></span>
+</td>
+
+<td>
+${manualPct.toFixed(2)}%
+<span class="bar"></span>
+</td>
+
+<td>
+<span class="pill ${processPct >= 60 ? 'good':'bad'}">
+${processPct.toFixed(2)}%
+</span>
+</td>
+
+<td>
+<span class="pill ${rejectPct <= 30 ? 'good':'bad'}">
+${rejectPct.toFixed(2)}%
+</span>
+</td>
+
+<td>${x.avgTime}</td>
+
+<td>${x.yAvgTime}</td>
+
+<td>
+<span class="pill ${compare <= 0 ? 'good':'bad'}">
+${compare >=0?'+':''}${compare.toFixed(2)}%
+</span>
+</td>
+
+<td>${x.remark || '-'}</td>
+
+</tr>
+
+`;
+
+}).join("");
+
 }
 
 function exportCSV(){
-  const header=["日期","国家","平台","三方","类型","业务方向","代收金额","代收笔数","代付金额","代付笔数","昨日代收","昨日代付","备注"];
-  const rows=filteredData.map(x=>[x.date,x.country,x.platform,x.provider,x.type,x.direction,x.receive,x.receiveOrders,x.payout,x.payoutOrders,x.yReceive,x.yPayout,x.remark]);
-  const csv=[header,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
-  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="monitoring-report.csv";
-  a.click();
+
+const header = [
+"日期","国家","平台","操作人","总数","已处理","驳回","自动处理","人工处理","平均处理时间","昨日平均处理时间","备注"
+];
+
+const rows = filteredData.map(x=>[
+x.date,
+x.country,
+x.platform,
+x.operator,
+x.total,
+x.processed,
+x.reject,
+x.auto,
+x.manual,
+x.avgTime,
+x.yAvgTime,
+x.remark
+]);
+
+const csv = [header,...rows]
+.map(r=>r.join(","))
+.join("\n");
+
+const blob = new Blob([csv],{type:'text/csv'});
+
+const a = document.createElement("a");
+
+a.href = URL.createObjectURL(blob);
+
+a.download = "report.csv";
+
+a.click();
+
 }
 
-setLang("zh");
-load();
-setInterval(load,AUTO_REFRESH_MS);
+loadData();
+
+setInterval(loadData,30000);
+
 </script>
+
 </body>
 </html>
