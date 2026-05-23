@@ -236,7 +236,7 @@ let rawRows=[], filteredRows=[], sortKey="", sortDir=1, page=1, pageSize=20;
 
 function t(k){return I18N[lang][k]||k}
 function $(id){return document.getElementById(id)}
-function csvUrl(pageId){return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${SHEETS[pageId].gid}`}
+function csvUrl(pageId){return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${SHEETS[pageId].gid}`;}
 
 function setLang(v){
   lang=v;
@@ -417,7 +417,7 @@ function computeCard(f){
 function renderTable(){
   const schema=SCHEMAS[currentPage];
   $("tableTitle").innerText=schema.title[lang];
-  $("tableDesc").innerText=`Sheet: ${currentPage} | GID: ${SHEETS[currentPage].gid}`;
+  $("tableDesc").innerText="";
   $("thead").innerHTML=schema.headers.map(h=>`<th onclick="sortBy('${h}')">${escapeHtml(h)} ${sortKey===h?(sortDir===1?"↑":"↓"):"↕"}</th>`).join("")+`<th>${t("detail")}</th>`;
 
   let rows=[...filteredRows];
